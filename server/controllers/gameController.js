@@ -9,7 +9,7 @@ import { getUserFromId } from "../models/Users.js";
 
 export async function getUserController(req, res) {
 	const id = req.params.id;
-	const user = await getUserFromId(id);
+	const user = getUserFromId(id);
 	return res.status(200).send(user);
 }
 
