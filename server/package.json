@@ -5,7 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "nodemon server.js"
+		"dev": "nodemon server.js",
+		"basic": "node basicSetup.js",
+		"start": "node server.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -13,6 +15,7 @@
 	"dependencies": {
 		"express": "^4.17.1",
 		"nodemon": "^2.0.15",
+		"solidity-sha3": "^0.4.1",
 		"truffle-contract": "^4.0.31",
 		"uuid": "^8.3.2",
 		"uuidv4": "^6.2.12",

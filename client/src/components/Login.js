@@ -1,11 +1,11 @@
 import axios from "axios";
-import Head from "next/head";
 import React, { useState } from "react";
 import { SERVER_URL } from "../constants";
-import { useRouter } from "next/router";
 
-export default function Login() {
-	const router = useRouter();
+import { useNavigate } from "react-router-dom";
+
+const Login = (props, context) => {
+	const navigate = useNavigate();
 
 	const [formData, setFormData] = useState({
 		user: {
@@ -31,7 +31,8 @@ export default function Login() {
 		axios
 			.post(`${SERVER_URL}/api/login`, formData.user)
 			.then((res) => {
-				router.replace(`/game/${res.data.id}`);
+				console.log("User", res.data.address);
+				navigate(`/game/${res.data.id}`);
 			})
 			.catch((err) => {
 				if (err.response?.status === 400) {
@@ -100,4 +101,6 @@ export default function Login() {
 			</div>
 		</figure>
 	);
-}
+};
+
+export default Login;

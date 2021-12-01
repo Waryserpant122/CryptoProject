@@ -1,24 +1,15 @@
 import express from "express";
-import { checkUserExists, getUser } from "../models/Users.js";
+import { loginController } from "../controllers/loginController.js";
+import { getBlock } from "../ethcontract.js";
 
 const router = express.Router();
 
 // Login route
 router.get("/", (req, res) => {
-	res.send("login");
+	res.send(getBlock(15));
 });
 
 // Login route
-router.post("/", (req, res) => {
-	const { username, password } = req.body;
-	if (!checkUserExists(username)) {
-		return res.status(400).send("User does not exist");
-	}
-	const user = getUser(username);
-	if (user.password !== password) {
-		return res.status(400).send("Incorrect password");
-	}
-	return res.status(200).send({ msg: "Login Successful", id: user.id });
-});
+router.post("/", loginController);
 
 export default router;

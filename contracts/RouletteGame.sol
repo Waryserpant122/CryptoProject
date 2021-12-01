@@ -35,6 +35,8 @@ contract Roulette is BankOwned {
 	mapping(address => uint256) public registeredFunds;
 
 	event NewGameRequest(address indexed user);
+	event BankVals(uint256 bSecret,bytes32 bHash);
+	event WinnerDetails(uint256 number, address winnner);
 
 	function increaseFunds() external payable {
 		require(msg.value > 0, "Must send ETH");
@@ -74,7 +76,7 @@ contract Roulette is BankOwned {
 		uint256 _betAmount
 	) external {
 		require(gameRounds[msg.sender].bankHash != 0x0, "Bank hash not yet set");
-		require(userValue == 0, "Already placed bet");
+		require(gameRounds[msg.sender].userValue == 0, "Already placed bet");
 		require(registeredFunds[bankAddress] >= _betAmount, "Not enough bank funds");
 		require(registeredFunds[msg.sender] >= _betAmount, "Not enough user funds");
 
@@ -87,7 +89,18 @@ contract Roulette is BankOwned {
 		registeredFunds[bankAddress] -= _betAmount;
 	}
 
+	function getHash(uint256 secret) pure external returns(bytes32){
+		return keccak256(abi.encodePacked(secret));
+	}
+
+	function getHashSaved(address userAddress) view external returns(bytes32){
+		return gameRounds[userAddress].bankHash;
+	}
+
 	function sendBankSecretValue(uint256 bankSecretValue, address userAddress) external {
+
+		emit BankVals(bankSecretValue, gameRounds[userAddress].bankHash);
+
 		require(gameRounds[userAddress].userValue != 0, "User has no value set");
 		require(gameRounds[userAddress].bankSecretValue == 0, "Already revealed");
 		require(
@@ -100,7 +113,6 @@ contract Roulette is BankOwned {
 		_evaluateBet(userAddress);
 		_resetContractFor(userAddress);
 
-		gameRounds[userAddress].bankHash = bytes32(bankSecretValue);
 	}
 
 	function checkBankSecretValueTimeout() external {
@@ -137,6 +149,8 @@ contract Roulette is BankOwned {
 		if (isNeitherRedNorBlack) winner = bankAddress;
 		else if (isRed == hasUserBetOnRed) winner = userAddress;
 		else winner = bankAddress;
+
+		emit WinnerDetails(number, winner);
 
 		registeredFunds[winner] += winningAmount;
 	}
