@@ -157,8 +157,13 @@ export default function RouletteWheel(props) {
 								disabled={isPlaced}
 							/>
 							<div className="mt-5">
-								<Button type="submit" fullWidth variant="contained" color="primary">
-									Place Bet
+								<Button
+									type="submit"
+									fullWidth
+									variant="contained"
+									color="primary"
+									disabled={isPlaced}>
+									{isPlaced ? "Bet Placed" : "Place Bet"}
 								</Button>
 							</div>
 						</form>
